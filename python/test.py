@@ -1,5 +1,24 @@
+import os
 print('\nstarting test')
 # META FUNCTIONS
+
+if (not os.path.isdir('rng_tunnel')):
+    os.mkdir('rng_tunnel')
+if (not os.path.isdir('user_keys')):
+    os.mkdir('user_keys')
+if (not os.path.isdir('user_proxy')):
+    os.mkdir('user_proxy')
+if (not os.path.isdir('proxy_user')):
+    os.mkdir('proxy_user')
+if (not os.path.isdir('proxy_tunnel')):
+    os.mkdir('proxy_tunnel')
+if (not os.path.isdir('tunnel_proxy')):
+    os.mkdir('tunnel_proxy')
+if (not os.path.isdir('tunnel_server')):
+    os.mkdir('tunnel_server')
+if (not os.path.isdir('server_tunnel')):
+    os.mkdir('server_tunnel')
+
 
 # DOWNLOAD KEYS
 from keyGenerator import generateKeys # 1
