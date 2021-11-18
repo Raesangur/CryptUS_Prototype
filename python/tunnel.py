@@ -56,9 +56,9 @@ def receiveMessageProxy():
             messageJSON = json.loads(str(messageFile.read()))
             if (messageJSON["type"] == Type.AUTH.value):
                 authUser(messageJSON)
-            if (messageJSON["type"] == Type.MSG.value):
+            elif (messageJSON["type"] == Type.MSG.value):
                 messageServer(messageJSON)
-            if (messageJSON["type"] == Type.DISC.value):
+            elif (messageJSON["type"] == Type.DISC.value):
                 disconnectUser(messageJSON)
             os.remove("proxy_tunnel/message.json")
 
