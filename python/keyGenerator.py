@@ -9,7 +9,7 @@ def generateKeys(numberOfKeys):
     for keyIndex in range(numberOfKeys):
 
         # the next line is the generation of a random string see https://www.askpython.com/python/examples/generate-random-strings-in-python
-        randomKey = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(random.randint(10, 100)))
+        randomKey = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(random.randint(100, 1000)))
         
         f = open("rng_tunnel/key" + str(keyIndex) + ".json", "w")
         f.write('{\n\t"key": "' + randomKey + '"\n}')

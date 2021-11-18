@@ -1,6 +1,7 @@
 import os
 print('\nstarting test')
-# META FUNCTIONS
+
+# CREATING DIRECTORIES ##########################################################################################################
 
 if (not os.path.isdir('rng_tunnel')):
     os.mkdir('rng_tunnel')
@@ -18,9 +19,13 @@ if (not os.path.isdir('tunnel_server')):
     os.mkdir('tunnel_server')
 if (not os.path.isdir('server_tunnel')):
     os.mkdir('server_tunnel')
+if (not os.path.isdir('server_root_directory')):
+    os.mkdir('server_root_directory')
 
+# META FUNCTIONS ################################################################################################################
 
-# DOWNLOAD KEYS
+# DOWNLOAD KEYS #################################################################################################################
+
 from keyGenerator import generateKeys # 1
 from tunnel import downloadKeys as tunnelDownloadKeys, messageProxy # 2
 from tunnel import distributedKey as tunnelDistributeKey # 3
@@ -32,9 +37,10 @@ def metaDownloadKeys():
     tunnelDistributeKey()
     userDownloadKey()
 
-metaDownloadKeys()
+# metaDownloadKeys()
 
-# AUTHENTIFICATE
+# AUTHENTIFICATE ################################################################################################################
+
 from user import authUser as userAuth # 1
 from proxy import receiveMessageUser as proxyReceiveMessageUser # 2
 from tunnel import receiveMessageProxy as tunnelReceiveMessageProxy # 3
@@ -48,9 +54,10 @@ def metaAuthentificate():
     proxyReceiveMessageTunnel()
     userReceiveMessageProxy()
 
-metaAuthentificate()
+# metaAuthentificate()
 
-# MESSAGE
+# MESSAGE #######################################################################################################################
+
 from user import messageProxy as userMessageProxy # 1
 # from proxy import receiveMessageUser as proxyReceiveMessageUser # 2
 # from tunnel import receiveMessageProxy as tunnelReceiveMessageProxy # 3
@@ -60,7 +67,7 @@ from tunnel import receiveMessageServer as tunnelReceiveMessageServer # 5
 # from user import receiveMessageProxy as userReceiveMessageProxy # 7
 
 def metaMessage():
-    message = "?"
+    message = "cd ddkemnjknde"
     userMessageProxy(message)
     proxyReceiveMessageUser()
     tunnelReceiveMessageProxy()
@@ -69,4 +76,90 @@ def metaMessage():
     proxyReceiveMessageTunnel()
     userReceiveMessageProxy()
 
-metaMessage()
+# metaMessage()
+
+# CLI ###########################################################################################################################
+
+from user import disconnect as userDisc
+
+userInput = ''
+while (userInput != 'fq'):
+
+    # MENU
+
+    print('\nthis is a cli bip bop\n')
+    print('\tgks -- generate keys\n')
+    print('\tkey -- download a new key\n')
+    print('\tauth -- authentificate\n')
+    print('\tdc -- disconect\n')
+    print('\tre -- request\n')
+    print('\tfq -- force quit\n')
+    userInput = input('\tinput: ')
+
+    # KEY GENERATION
+
+    if (userInput == 'gks'):
+        isValidNum = False
+        while (not isValidNum):
+            try:
+                userInput = input('\n\thow many keys do you want to create ? [0 - 100]: ')
+                if (len(str(userInput).split(' ')) == 1):
+                    if(int(userInput) > -1 and int(userInput) < 101):
+                        isValidNum = True
+                    else:
+                        print('\n\twrong input')
+                else:
+                    print('\n\twrong input')
+            except:
+                print('\n\twrong input')
+                userInput = '-1'
+        generateKeys(int(userInput))
+        tunnelDownloadKeys()
+    
+    # KEY DOWNLOAD
+
+    if (userInput == 'key'):
+        userInput = ''
+        while (userInput != 'y' and userInput != 'n'):
+            userInput = input('\n\tif there are no key available this will generate an error and the program will terminate, proceed ? [y/n]: ')
+            if (userInput == 'y'):
+                tunnelDistributeKey()
+                userDownloadKey()
+            elif (userInput != 'n'):
+                print('\n  wrong input')
+
+    # AUTHENTIFICATE
+
+    if (userInput == 'auth'):
+        userAuth()
+        proxyReceiveMessageUser()
+        tunnelReceiveMessageProxy()
+        proxyReceiveMessageTunnel()
+        userReceiveMessageProxy()
+
+    # REQUEST
+
+    if (userInput == 're'):
+        userInput = input("\n\tenter your request to the server: ")
+        userMessageProxy(str(userInput))
+        proxyReceiveMessageUser()
+        tunnelReceiveMessageProxy()
+        serverReceiveMessageTunnel()
+        tunnelReceiveMessageServer()
+        proxyReceiveMessageTunnel()
+        userReceiveMessageProxy()
+        userInput = ''
+
+    # DISCONNECT
+
+    if (userInput == 'dc'):
+        while (userInput != 'y' and userInput != 'n'):
+            userInput = input('\n\tyou are about to disconect, proceed ? [y/n]: ')
+            if (userInput == 'y'):
+                userDisc()
+                proxyReceiveMessageUser()
+                tunnelReceiveMessageProxy()
+                proxyReceiveMessageTunnel()
+                userReceiveMessageProxy()
+            elif (userInput != 'n'):
+                print('\n\twrong input')

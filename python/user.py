@@ -13,7 +13,7 @@ connected = False
 # downloads a new key for the user to use
 def downloadKey():
     global key
-    with open("user_keys/key.json", "r") as keyFile: # open in readonly mode
+    with open("user_keys/key.json", "r") as keyFile:
             key = json.loads(str(keyFile.read()))["key"]
     os.remove("user_keys/key.json")
 
@@ -25,6 +25,9 @@ def deleteKey():
 # XOR on a message
 def crypt(message):
     global key
+    if (len(message) > len(key)):
+        print('\n\tcannot encrypt or decrypt the message due to the key length, session terminated')
+        exit()
     newMessage = "".join([chr(ord(a) ^ ord(b)) for a,b in zip(key, message)])
     key = key[len(message):len(key)]
     return newMessage
@@ -43,7 +46,7 @@ def messageProxy(body):
         with open("user_proxy/message.json", "w") as messageFile:
                 messageFile.write(messageJSON)
     else:
-        print('please authentificate yourself before sending messages')
+        print('\n\tplease authentificate yourself before sending messages')
 
 # authentification of the user
 def authUser():
@@ -57,9 +60,9 @@ def authUser():
         with open("user_proxy/message.json", "w") as messageFile:
                 messageFile.write(messageJSON)
     else:
-        print('you are already connected do you wish to disconnect ?')
+        print('\n\tyou are already connected')
 
-def deconnect():
+def disconnect():
     global key
     if (connected):
         messageJSON = json.dumps({
@@ -70,7 +73,7 @@ def deconnect():
         with open("user_proxy/message.json", "w") as messageFile:
             messageFile.write(messageJSON)
     else:
-        print('you are not connected do you wish to connect ?')
+        print('\n\tyou are not connected')
 
 # RECVEIVE MESSAGE FUNCTIONS ####################################################################################################
 
@@ -82,19 +85,19 @@ def receiveMessageProxy():
             messageJSON = json.loads(str(messageFile.read()))
             if (messageJSON["type"] == Type.MSG.value):
                 messageJSON["body"] = crypt(messageJSON["body"])
-                print(messageJSON["body"])
+                print('\n\t' + messageJSON["body"])
             if (messageJSON["type"] == Type.AUTH.value):
                 if (messageJSON["body"] == "success"):
                     connected = True
-                    print('connection successful')
+                    print('\n\tconnection successful')
                 else:
                     connected = False
-                    print('failed to connect')
+                    print('\n\tfailed to connect')
             if (messageJSON["type"] == Type.DISC.value):
                 if (messageJSON["body"] == "success"):
                     connected = False
-                    print('deconnected successfully')
+                    print('\n\tdisconnected successfully')
                 else:
                     connected = True
-                    print('failed to disconnect')
+                    print('\n\tfailed to disconnect')
         os.remove("proxy_user/message.json")

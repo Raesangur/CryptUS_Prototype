@@ -94,7 +94,8 @@ def disconnect(messageJSON):
     userIndex = removeUserIP(messageJSON["ip"])
     messageToTunnelJSON = json.dumps({
         'userId': userIndex,
-        'type': messageJSON["type"]
+        'type': messageJSON["type"],
+        'body': ''
     }, indent = 4)
     with open("proxy_tunnel/message.json", "w") as messageFile:
             messageFile.write(messageToTunnelJSON)

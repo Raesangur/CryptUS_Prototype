@@ -14,7 +14,7 @@ lastKeyIndexAssinged = 0
 def downloadKeys():
     keyIndex = 0
     for _ in os.listdir("rng_tunnel"):
-        with open("rng_tunnel/key" + str(keyIndex) + ".json", "r") as keyFile: # open in readonly mode
+        with open("rng_tunnel/key" + str(keyIndex) + ".json", "r") as keyFile:
             keyJSON = json.loads(str(keyFile.read()))
             keyList.append(keyJSON["key"])
             os.remove("rng_tunnel/key" + str(keyIndex) +".json")
@@ -23,12 +23,11 @@ def downloadKeys():
 # keeps track of the last index of key distributed
 def distributedKey():
     global lastKeyIndexAssinged
-    with open("user_keys/key.json", "w") as keyFile: # open in readonly mode
+    with open("user_keys/key.json", "w") as keyFile:
             keyJSON = json.dumps({
                 'key':keyList[lastKeyIndexAssinged]
             })
             keyFile.write(keyJSON)
-    lastKeyIndexAssinged += 1
 
 # panic mode
 def deleteKeys():
@@ -59,6 +58,8 @@ def receiveMessageProxy():
                 authUser(messageJSON)
             if (messageJSON["type"] == Type.MSG.value):
                 messageServer(messageJSON)
+            if (messageJSON["type"] == Type.DISC.value):
+                disconnectUser(messageJSON)
             os.remove("proxy_tunnel/message.json")
 
 # authentificate user
@@ -79,15 +80,15 @@ def authUser(messageJSON):
 
 # disconnect user
 def disconnectUser(messageJSON):
-    if (userKeyDictionnary[messageJSON["userId"]]):
+    if (userKeyDictionnary[messageJSON["userId"]] is not None):
         with open("tunnel_proxy/message.json", "w") as messageFile:
             messageJSON["body"] = "success"
-            messageFile.write(messageJSON)
+            messageFile.write(json.dumps(messageJSON))
         userKeyDictionnary.pop(messageJSON["userId"])
     else:
         with open("tunnel_proxy/message.json", "w") as messageFile:
             messageJSON["body"] = "failure"
-            messageFile.write(messageJSON)
+            messageFile.write(json.dumps(messageJSON))
 
     
 # MESSAGE FUNCTIONS #############################################################################################################
