@@ -27,24 +27,22 @@ def serve(messageJSON):
     if (len(messageJSON["body"].split(' ')) == 2):
         operand = messageJSON["body"].split(' ')[0]
         operator =  messageJSON["body"].split(' ')[1]
-        if (operand == 'cd'):
-            answer["body"] = changeDirectory(operator)
+        if operand == "cf":
+            open("server_root_directory/" + operator, "w")
+            answer["body"] = "file created successfully"
+        elif operand == "of":
+            if os.path.exists("server_root_directory/" +  operator):
+                file = open("server_root_directory/" + operator, 'r')
+                answer["body"] = "nano" + file.read()
+            else:
+                answer["body"] = "file does not exist successfully"
+        else:
+            answer["body"] = "unrecognized command" + operand
     else:
-        answer["body"] = 'bad request'
+        answer["body"] = "bad request"
     
     answerJSON =json.dumps(answer)
     messageTunnel(answerJSON)
-
-def changeDirectory(operator):
-    if (os.path.isdir('server_root_directory/' + operator)):
-        body = ''
-        for file in os.listdir('server_root_directory/' + operator):
-            body += file + '\t'
-        return body
-    elif (os.path.isfile('server_root_directory/' + operator)):
-        return 'not a directory'
-    else:
-        return 'no such file in directory ' + operator
 
 # TEST ##########################################################################################################################
 

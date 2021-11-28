@@ -96,6 +96,9 @@ while (userInput != 'fq'):
     print('\tfq -- force quit\n')
     userInput = input('\tinput: ')
 
+    os.system('cls')
+    os.system('clear')
+
     # KEY GENERATION
 
     if (userInput == 'gks'):

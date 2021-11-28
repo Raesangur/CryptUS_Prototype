@@ -17,7 +17,7 @@ def downloadKeys():
         with open("rng_tunnel/key" + str(keyIndex) + ".json", "r") as keyFile:
             keyJSON = json.loads(str(keyFile.read()))
             keyList.append(keyJSON["key"])
-            os.remove("rng_tunnel/key" + str(keyIndex) +".json")
+        os.remove("rng_tunnel/key" + str(keyIndex) +".json")
         keyIndex += 1
 
 # keeps track of the last index of key distributed
@@ -60,7 +60,7 @@ def receiveMessageProxy():
                 messageServer(messageJSON)
             elif (messageJSON["type"] == Type.DISC.value):
                 disconnectUser(messageJSON)
-            os.remove("proxy_tunnel/message.json")
+        os.remove("proxy_tunnel/message.json")
 
 # authentificate user
 def authUser(messageJSON):

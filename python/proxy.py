@@ -63,15 +63,17 @@ def messageTunnel(messageJSON):
 def authUser(messageJSON):
     if (getID(messageJSON["ip"]) == 0):
         userIndex = addUser(messageJSON["ip"])
-    else:
-        return authError(messageJSON)
-    messageToTunnelJSON = json.dumps({
+        messageToTunnelJSON = json.dumps({
         'userId': userIndex,
         'type': messageJSON["type"],
         'body': messageJSON["body"]
-    }, indent = 4)
-    with open("proxy_tunnel/message.json", "w") as messageFile:
+        }, indent = 4)
+        with open("proxy_tunnel/message.json", "w") as messageFile:
             messageFile.write(messageToTunnelJSON)
+    else:
+        authError(messageJSON)
+        
+    
 
 # sends error to the user
 def authError(messageJSON):
@@ -89,7 +91,7 @@ def authError(messageJSON):
         }, indent = 4)
     with open("proxy_user/message.json", "w") as messageFile:
                 messageFile.write(messageToUserJSON)
-
+#TODO verifier que la non-verification n'est pas dangereuse en cas de bris de communication
 def disconnect(messageJSON):
     userIndex = removeUserIP(messageJSON["ip"])
     messageToTunnelJSON = json.dumps({
