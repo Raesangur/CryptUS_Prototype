@@ -25,6 +25,7 @@ python/tunnel_proxy/
 python/tunnel_server/
 python/user_keys/
 python/user_proxy/
+go/var/
 # Tags
 tags
 
