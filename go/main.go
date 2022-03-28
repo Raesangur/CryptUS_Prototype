@@ -10,6 +10,7 @@ const (
 	SERVER_DIR = "./var/cryptus/"
 	LOG_DIR    = "./var/log/"
 	LOG_FILE   = "cryptus.log"
+	LOG_LEVEL  = "ERROR"
 	MAX_IDLE   = time.Hour * 2
 	// TODO: agree on a port
 	// TODO: perhaps make port configurable
@@ -17,9 +18,9 @@ const (
 )
 
 var (
-	WarnLog  *log.Logger
-	InfoLog  *log.Logger
-	ErrorLog *log.Logger
+	InfoLog  Logger = NullLogger{}
+	WarnLog  Logger = NullLogger{}
+	ErrorLog Logger = NullLogger{}
 )
 
 func init() {
@@ -43,15 +44,26 @@ func init() {
 	if err != nil {
 		log.Fatalf("error opening log file: %v", err)
 	}
+	switch LOG_LEVEL {
+	case "INFO":
+		InfoLog = log.New(logfile, "\x1b[34mINFO:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		WarnLog = log.New(logfile, "\x1b[33;4mWARNING:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		ErrorLog = log.New(logfile, "\x1b[37;41mERROR:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	case "WARNING":
+		WarnLog = log.New(logfile, "\x1b[33;4mWARNING:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		ErrorLog = log.New(logfile, "\x1b[37;41mERROR:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	case "ERROR":
+		ErrorLog = log.New(logfile, "\x1b[37;41mERROR:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	default:
+	}
 	// Log levels are coloured with ANSI escape codes
-	InfoLog = log.New(logfile, "\x1b[34mINFO:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
-	WarnLog = log.New(logfile, "\x1b[33;4mWARNING:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
-	ErrorLog = log.New(logfile, "\x1b[37;41mERROR:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
-	InfoLog.Println("Cryptus server is starting.")
+	// InfoLog = log.New(logfile, "\x1b[34mINFO:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	// WarnLog = log.New(logfile, "\x1b[33;4mWARNING:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	// ErrorLog = log.New(logfile, "\x1b[37;41mERROR:\x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 func main() {
-	InfoLog.Println("Cryptus server started.")
+	// InfoLog.Println("Cryptus server started.")
 	client := map[string]Client{}
 	for i := 0; i < 10; i++ {
 		addClient(&client)
